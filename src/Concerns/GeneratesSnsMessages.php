@@ -35,9 +35,15 @@ trait GeneratesSnsMessages
      */
     protected static function initializeSsl(): void
     {
-        static::$snsPrivateKey = openssl_pkey_new();
+        $config = [
+            'digest_alg' => 'sha256',
+            'private_key_bits' => 2048,
+            'private_key_type' => OPENSSL_KEYTYPE_RSA,
+        ];
 
-        $csr = openssl_csr_new([], static::$snsPrivateKey);
+        static::$snsPrivateKey = openssl_pkey_new($config);
+
+        $csr = openssl_csr_new([], static::$snsPrivateKey, $config);
 
         $x509 = openssl_csr_sign($csr, null, static::$snsPrivateKey, 1);
 
