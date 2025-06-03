@@ -1,5 +1,5 @@
 {
-    "name": "rennokki/laravel-sns-events",
+    "name": "thiagolcks/laravel-sns-events",
     "description": "Laravel SNS Events eases the processing of incoming SNS webhooks using Laravel Events.",
     "type": "package",
     "license": "Apache-2.0",
@@ -8,10 +8,16 @@
     ],
     "authors": [
         {
+            "name": "Thiago Locks",
+            "email": "thiagolcks@gmail.com",
+            "homepage": "https://github.com/thiagolcks",
+            "role": "Maintainer"
+        },
+        {
             "name": "Alex Renoki",
             "email": "alex@renoki.org",
             "homepage": "https://github.com/rennokki",
-            "role": "Developer"
+            "role": "Original Author"
         }
     ],
     "require": {
