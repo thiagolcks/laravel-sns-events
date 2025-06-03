@@ -20,9 +20,13 @@ jobs:
         php:
           - '8.1'
           - '8.2'
+          - '8.3'
+          - '8.4'
         laravel:
           - 9.*
           - 10.*
+          - 11.*
+          - 12.*
         prefer:
           - 'prefer-lowest'
           - 'prefer-stable'
@@ -31,20 +35,38 @@ jobs:
             testbench: '7.*'
           - laravel: '10.*'
             testbench: '8.*'
+          - laravel: '11.*'
+            testbench: '9.*'
+          - laravel: '12.*'
+            testbench: '10.*'
+        exclude:
+          # Laravel 9 doesn't support PHP 8.3+
+          - laravel: '9.*'
+            php: '8.3'
+          - laravel: '9.*'
+            php: '8.4'
+          # Laravel 10 doesn't support PHP 8.4
+          - laravel: '10.*'
+            php: '8.4'
+          # Laravel 11+ requires PHP 8.2+
+          - laravel: '11.*'
+            php: '8.1'
+          - laravel: '12.*'
+            php: '8.1'
 
     name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }} --${{ matrix.prefer }}
 
     steps:
-    - uses: actions/checkout@v3.0.2
+    - uses: actions/checkout@v4
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php }}
-        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, openssl
         coverage: pcov
 
-    - uses: actions/cache@v3.0.11
+    - uses: actions/cache@v4
       name: Cache dependencies
       with:
         path: ~/.composer/cache/files
@@ -53,12 +75,12 @@ jobs:
     - name: Install dependencies
       run: |
         composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
-        composer update --${{ matrix.prefer }} --prefer-dist --no-interaction --no-suggest
+        composer update --${{ matrix.prefer }} --prefer-dist --no-interaction
 
     - name: Run tests
       run: |
         vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml
 
-    - uses: codecov/codecov-action@v3.1.0
+    - uses: codecov/codecov-action@v4
       with:
         fail_ci_if_error: false
